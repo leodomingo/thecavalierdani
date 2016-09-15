@@ -1,7 +1,9 @@
 from .models import Article, Author, Tag
 from django.forms import modelformset_factory
 
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, render_to_response
+
+from formtools.wizard.views import SessionWizardView
 
 
 def articleList(request):
@@ -38,6 +40,27 @@ def dashboard(request):
         authorformset = AuthorFormSet()
         tagformset = TagFormSet()
     return render(request, 'unicorn/new.html',
-                 {'articleformset': articleformset,
-                        'authorformset': authorformset,
-                        'tagformset': tagformset})
+                  {'articleformset': articleformset,
+                   'authorformset': authorformset,
+                   'tagformset': tagformset})
+
+
+def process_form_data(form_list):
+    form_data = [form.cleaned_data for form in form_list]
+    return form_data
+
+
+class AuthorWizard(SessionWizardView):
+    template_name = "unicorn/author_form.html"
+
+    def done(self, form_list, **kwargs):
+        form_data = process_form_data(form_list)
+        return render_to_response('unicorn/done.html', {'form_data': form_data})
+
+
+class ArticleWizard(SessionWizardView):
+    template_name = "unicorn/article_form.html"
+
+    def done(self, form_list, **kwargs):
+        form_data = process_form_data(form_list)
+        return render_to_response('unicorn/done.html', {'form_data': form_data})
