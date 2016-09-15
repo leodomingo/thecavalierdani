@@ -1,0 +1,24 @@
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+
+{% block content %}
+
+<h2>Success!</h2>
+make a cooler done page
+<br />
+{% for form in form_data %}
+{{form}}
+{% endfor %}
+
+<br />
+<button type="submit" class="save btn btn-default"><a href="{% url 'dashboard' %}">Home</a></button>
+
+{% endblock %}
