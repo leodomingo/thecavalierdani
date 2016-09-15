@@ -55,11 +55,12 @@ class ArticleForm2(forms.ModelForm):
         fields = ['abstract']
 
 
-class ArticleForm3(forms.ModelForm):
-
-    class Meta:
-        model = Article
-        fields = ['authors']
+class ArticleForm3(forms.Form):
+    if (len(Author.objects.all()) == 0):
+        a = Author(first_name="Greatest", last_name="Ever")
+        a.save()
+    all_authors = Author.objects.all()
+    authors = forms.ModelChoiceField(queryset=all_authors)
 
 
 class ArticleForm4(forms.ModelForm):
@@ -83,8 +84,9 @@ class ArticleForm6(forms.ModelForm):
         fields = ['status']
 
 
-class ArticleForm7(forms.ModelForm):
-
-    class Meta:
-        model = Article
-        fields = ['tags']
+class ArticleForm7(forms.Form):
+    if (len(Tag.objects.all()) == 0):
+        t = Tag(text="uva")
+        t.save()
+    all_tags = Tag.objects.all()
+    tags = forms.ModelChoiceField(queryset=all_tags)

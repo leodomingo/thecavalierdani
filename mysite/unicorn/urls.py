@@ -12,5 +12,5 @@ urlpatterns = [
     url(r'^author$', AuthorWizard.as_view(
         [AuthorForm1, AuthorForm2, AuthorForm3, AuthorForm4])),
     url(r'^article$', ArticleWizard.as_view(
-        [ArticleForm1, ArticleForm2, ArticleForm4, ArticleForm5, ArticleForm6])),
+        [ArticleForm1, ArticleForm2, ArticleForm3, ArticleForm4, ArticleForm5, ArticleForm6, ArticleForm7])),
 ]
