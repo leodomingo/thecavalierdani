@@ -74,7 +74,6 @@ class ArticleWizard(SessionWizardView):
     def done(self, form_list, **kwargs):
         form_data = process_form_data(form_list)
         article_data = flatten_dict(form_data)
-        print(article_data)
         new_article = Article(
                 headline=article_data['headline'],
                 abstract=article_data['abstract'],
@@ -93,7 +92,9 @@ class TagWizard(SessionWizardView):
 
     def done(self, form_list, **kwargs):
         form_data = process_form_data(form_list)
-        tag_data = flatten_dict(form_list)
-        new_tag = Tag(**tag_data)
+        new_tag = Tag(
+                text=form_data[0]['text'],
+                description=form_data[1]['description'],
+            )
         new_tag.save()
         return render_to_response('unicorn/done.html', {'form_data': form_data})
