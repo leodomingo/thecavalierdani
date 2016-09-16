@@ -32,6 +32,7 @@ class ArticleFormTests(TestCase):
         form = ArticleForm2(data=form_data2)
         self.assertTrue(form.is_valid())
 
+    # TODO: Mock Many-to-Many relationships to validate a form
     # def test_article_form3_is_valid(self):
     #     author1 = Author(first_name="foo", last_name="bar")
     #     form_data3 = {'authors': author1}
@@ -53,6 +54,7 @@ class ArticleFormTests(TestCase):
         form = ArticleForm6(data=form_data6)
         self.assertTrue(form.is_valid())
 
+    # TODO: Mock Many-to-Many relationships to validate a form
     # def test_article_form6_is_valid(self):
     #     tag1 = Tag(text="text", description="description")
     #     form_data7 = {'tags': tag1}
