@@ -3,42 +3,39 @@ from .models import Article, Author, Tag
 from django.forms.formsets import BaseFormSet
 
 
-class ArticleForm(forms.ModelForm):
-
-    class Meta:
-        model = Article
-        fields = '__all__'
-
-
-class AuthorForm(forms.ModelForm):
-
-    class Meta:
-        model = Author
-        fields = ('first_name', 'last_name', 'bio', 'academic_year', 'school')
-
-
-class TagForm(forms.ModelForm):
+class TagForm1(forms.ModelForm):
 
     class Meta:
         model = Tag
-        fields = ('text',)
+        fields = ['text']
 
 
-class AuthorForm1(forms.Form):
-    first_name = forms.CharField(max_length=50)
-    last_name = forms.CharField(max_length=50)
+class TagForm2(forms.ModelForm):
+
+    class Meta:
+        model = Tag
+        fields = ['description']
 
 
-class AuthorForm2(forms.Form):
-    bio = forms.CharField(max_length=140)
+class AuthorForm1(forms.ModelForm):
+
+    class Meta:
+        model = Author
+        fields = ['first_name', 'last_name']
 
 
-class AuthorForm3(forms.Form):
-    academic_year = forms.IntegerField()
+class AuthorForm2(forms.ModelForm):
+
+    class Meta:
+        model = Author
+        fields = ['bio']
 
 
-class AuthorForm4(forms.Form):
-    school = forms.CharField(max_length=40)
+class AuthorForm3(forms.ModelForm):
+
+    class Meta:
+        model = Author
+        fields = ['academic_year', 'school']
 
 
 class ArticleForm1(forms.ModelForm):
@@ -60,7 +57,7 @@ class ArticleForm3(forms.Form):
         a = Author(first_name="Greatest", last_name="Ever")
         a.save()
     all_authors = Author.objects.all()
-    authors = forms.ModelChoiceField(queryset=all_authors)
+    authors = forms.ModelMultipleChoiceField(queryset=all_authors)
 
 
 class ArticleForm4(forms.ModelForm):
@@ -89,4 +86,4 @@ class ArticleForm7(forms.Form):
         t = Tag(text="uva")
         t.save()
     all_tags = Tag.objects.all()
-    tags = forms.ModelChoiceField(queryset=all_tags)
+    tags = forms.ModelMultipleChoiceField(queryset=all_tags)

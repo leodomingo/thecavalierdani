@@ -49,12 +49,22 @@ def process_form_data(form_list):
     form_data = [form.cleaned_data for form in form_list]
     return form_data
 
+def flatten_dict(form_list):
+    flattened_form_data = {}
+    for elem in form_list:
+        flattened_form_data.update(elem)
+    return flattened_form_data
+
+
 
 class AuthorWizard(SessionWizardView):
     template_name = "unicorn/author_form.html"
 
     def done(self, form_list, **kwargs):
         form_data = process_form_data(form_list)
+        author_data = flatten_dict(form_data)
+        new_author = Author(**author_data)
+        new_author.save()
         return render_to_response('unicorn/done.html', {'form_data': form_data})
 
 
@@ -63,4 +73,27 @@ class ArticleWizard(SessionWizardView):
 
     def done(self, form_list, **kwargs):
         form_data = process_form_data(form_list)
+        article_data = flatten_dict(form_data)
+        print(article_data)
+        new_article = Article(
+                headline=article_data['headline'],
+                abstract=article_data['abstract'],
+                copy=article_data['copy'],
+                slug=article_data['slug'],
+            )
+        # Must save parent object before adding m2m relationships
+        new_article.save()
+        new_article.add_authors(article_data['authors'])
+        new_article.add_tags(article_data['tags'])
+        new_article.save()
+        return render_to_response('unicorn/done.html', {'form_data': form_data})
+
+class TagWizard(SessionWizardView):
+    template_name = "unicorn/tag_form.html"
+
+    def done(self, form_list, **kwargs):
+        form_data = process_form_data(form_list)
+        tag_data = flatten_dict(form_list)
+        new_tag = Tag(**tag_data)
+        new_tag.save()
         return render_to_response('unicorn/done.html', {'form_data': form_data})
