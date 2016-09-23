@@ -1,0 +1,23 @@
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-8">
+			<h2>Tag List </h2>
+			{% if tag_list %}
+				{% for tag in tag_list%}
+					<h4><a href="/tags/{{tag.slug}}">{{tag.slug}}</a></h4>
+				{% endfor %}
+			{% else %}
+				<p>No Tags are available</p>
+			{% endif%}
+		</div>
+	</div>
+</div>

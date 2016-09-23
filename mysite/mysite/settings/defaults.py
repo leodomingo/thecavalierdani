@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '0kz874a134g6to8o3yx99c7%27eqv*zhdx#0#m3wmx5+e^#o3j'
+SECRET_KEY = 'asdlkfzvnqweiroique'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'unicorn.apps.UnicornConfig',
+    'unicorn_api.apps.UnicornApiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,7 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'autofixture',
     'bootstrap3',
-    'formtools'
+    'formtools',
+    'storages',
+    'rest_framework',
+    'rest_framework_swagger',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -59,7 +63,7 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -124,3 +128,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+LOGIN_REDIRECT_URL = '/'  # It means home view
+
+APPEND_SLASH = True

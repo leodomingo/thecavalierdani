@@ -1,5 +1,5 @@
-# thecavalierdani
-CMS and front end app for student news publication
+# unicorn
+Content Management System for student news publications
 
 ###Brief 
 The Cavalier Daily, a student news publication at the University of Virginia, is undertaking this project to create a
@@ -18,6 +18,7 @@ Our front end will be built with AngularJS that will consume our content API moc
     - `mkvirtualenv cavdaily`
 - Install package requirements
     - `pip install -r requirements.txt`
+- Copy `mysite/settings/local-dist.py` into `mysite/settings/local.py` and fill in fields
 
 ###Running Django App
 

@@ -9,13 +9,13 @@
 {% bootstrap_messages %}
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-md-4">
+		<div class="col-md-8">
 			<h1>Article List</h1>
-			{% if articleList %}
+			{% if article_list %}
 			    <ul>
-				    {% for article in articleList %}
+				    {% for article in article_list %}
 					    <li>
-					    	<h3><a href="/unicorn/{{ article.slug }}/">{{ article.headline }}</a></h3>
+					    	<h3><a href="/articles/{{ article.slug }}/">{{ article.headline }}</a></h3>
 					    	<ul>
 					    		<li>Tags</li>
 					        {% for tag in article.tags.all %}
@@ -38,26 +38,6 @@
 			{% else %}
 			    <p>No Articles are available.</p>
 			{% endif %}
-		</div>
-		<div class="col-md-4">
-			<h2>Tag List </h2>
-			{% if tagList %}
-				{% for tag in tagList%}
-					<h4>{{tag.text}}</h4>
-				{% endfor %}
-			{% else %}
-				<p>No Tags are available</p>
-			{% endif%}
-		</div>
-		<div class="col-md-4">
-			<h2>Author List </h2>
-			{% if authorList %}
-				{% for author in authorList%}
-					<h4>{{author.last_name}}, {{author.first_name}}</h4>
-				{% endfor %}
-			{% else %}
-				<p>No Authors are available</p>
-			{% endif%}
 		</div>
 	</div>
 </div>

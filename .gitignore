@@ -73,7 +73,9 @@ target/
 venv/
 ENV/
 
-mysite/db*
+db.sqlite3
+images/
+headshots/
 
 local.py
 local.yml

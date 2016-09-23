@@ -1,0 +1,20 @@
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+<h1>{{ tag.title }}</h1>
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<h3>{{tag.slug}}</h3>
+			<p>{{tag.description}}</p>
+		</div>
+	</div>
+</div>

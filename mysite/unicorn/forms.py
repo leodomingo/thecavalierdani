@@ -1,6 +1,5 @@
 from django import forms
 from .models import Article, Author, Tag
-from django.forms.formsets import BaseFormSet
 
 
 class TagForm1(forms.ModelForm):
