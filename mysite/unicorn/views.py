@@ -1,115 +1,71 @@
-from .models import Article, Author, Tag
-from django.forms import modelformset_factory
-from django.shortcuts import get_object_or_404, render, render_to_response
-from formtools.wizard.views import SessionWizardView
 from django.views.generic import ListView, DetailView
+from django.http import HttpResponseRedirect
+from django.views.generic import CreateView
+
+from .forms import ArticleForm, AuthorFormSet, TagFormSet
+from .models import Article, Author, Tag
 
 
-def process_form_data(form_list):
-    form_data = [form.cleaned_data for form in form_list]
-    return form_data
+class ArticleCreateView(CreateView):
+    template_name = 'unicorn/new_article.html'
+    model = Article
+    form_class = ArticleForm
+    success_url = 'success/'
 
+    def get(self, request, *args, **kwargs):
+        """
+        Handles GET requests and instantiates blank versions of the form
+        and its inline formsets.
+        """
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        author_form = AuthorFormSet()
+        tag_form = TagFormSet()
+        return self.render_to_response(
+            self.get_context_data(form=form,
+                                  author_form=author_form,
+                                  tag_form=tag_form))
 
-def flatten_dict(form_list):
-    flattened_form_data = {}
-    for elem in form_list:
-        flattened_form_data.update(elem)
-    return flattened_form_data
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance and its inline
+        formsets with the passed POST variables and then checking them for
+        validity.
+        """
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        ingredient_form = IngredientFormSet(self.request.POST)
+        instruction_form = InstructionFormSet(self.request.POST)
+        if (form.is_valid() and ingredient_form.is_valid() and
+            instruction_form.is_valid()):
+            return self.form_valid(form, ingredient_form, instruction_form)
+        else:
+            return self.form_invalid(form, ingredient_form, instruction_form)
 
+    def form_valid(self, form, ingredient_form, instruction_form):
+        """
+        Called if all forms are valid. Creates a Recipe instance along with
+        associated Ingredients and Instructions and then redirects to a
+        success page.
+        """
+        self.object = form.save()
+        ingredient_form.instance = self.object
+        ingredient_form.save()
+        instruction_form.instance = self.object
+        instruction_form.save()
+        return HttpResponseRedirect(self.get_success_url())
 
-def getNewAuthor(data):
-    new_author = Author(
-        first_name=data['first_name'],
-        last_name=data['last_name'],
-        bio=data['bio'],
-        academic_year=data['academic_year'],
-        school=data['school'],
-    )
-    new_author.save()
-    return new_author
-
-
-def getNewTag(data):
-    new_tag = Tag(
-        text=data['text'],
-        description=data['description'],
-    )
-    new_tag.save()
-    return new_tag
-
-
-class AuthorWizard(SessionWizardView):
-    template_name = "unicorn/author_form.html"
-
-    def done(self, form_list, **kwargs):
-        form_data = process_form_data(form_list)
-        author_data = flatten_dict(form_data)
-        new_author = Author(**author_data)
-        new_author.save()
-        return render_to_response('unicorn/done.html', {'form_data': form_data})
-
-
-class ArticleWizard(SessionWizardView):
-    template_name = "unicorn/article_form.html"
-
-    def done(self, form_list, **kwargs):
-        form_data = process_form_data(form_list)
-        article_data = flatten_dict(form_data)
-        new_article = Article(
-            headline=article_data['headline'],
-            abstract=article_data['abstract'],
-            copy=article_data['copy'],
-            slug=article_data['slug'],
-        )
-        # Must save parent object before adding m2m relationships
-        new_article.save()
-        new_article.add_authors(article_data['authors'])
-        new_article.add_tags(article_data['tags'])
-        new_article.save()
-        return render_to_response('unicorn/done.html', {'form_data': form_data})
-
-
-class TagWizard(SessionWizardView):
-    template_name = "unicorn/tag_form.html"
-
-    def done(self, form_list, **kwargs):
-        form_data = process_form_data(form_list)
-        new_tag = Tag(
-            text=form_data[0]['text'],
-            description=form_data[1]['description'],
-        )
-        new_tag.save()
-        return render_to_response('unicorn/done.html', {'form_data': form_data})
-
-
-class NewArticleWizard(SessionWizardView):
-    template_name = "unicorn/new_article.html"
-
-    def done(self, form_list, **kwargs):
-        form_data = process_form_data(form_list)
-        article_data = flatten_dict(form_data)
-        new_article = Article(
-            headline=article_data['headline'],
-            abstract=article_data['abstract'],
-            copy=article_data['copy'],
-            slug=article_data['slug'],
-            status=article_data['status'],
-        )
-        # Must save parent object before adding m2m relationships
-        new_article.save()
-
-        new_article.add_authors(article_data['authors'])
-        if (len(article_data['first_name']) > 0 and len(article_data['last_name']) > 0):
-            new_author = getNewAuthor(article_data)
-            new_article.add_author(new_author)
-
-        new_article.add_tags(article_data['tags'])
-        if (len(article_data['text']) > 0 and len(article_data['description']) > 0):
-            new_tag = getNewTag(article_data)
-            new_article.add_tag(new_tag)
-
-        new_article.save()
-        return render_to_response('unicorn/done.html', {'form_data': form_data})
+    def form_invalid(self, form, ingredient_form, instruction_form):
+        """
+        Called if a form is invalid. Re-renders the context data with the
+        data-filled forms and errors.
+        """
+        return self.render_to_response(
+            self.get_context_data(form=form,
+                                  ingredient_form=ingredient_form,
+                                  instruction_form=instruction_form))
 
 class ArticleList(ListView):
     model = Article

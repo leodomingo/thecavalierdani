@@ -57,29 +57,22 @@ class Article(models.Model):
     edited = models.DateTimeField(auto_now=True)
     headline = models.CharField(max_length=100)
     abstract = models.TextField(max_length=100)
-    authors = models.ManyToManyField(Author, related_name='articles')
+    authors = models.ManyToManyField(Author, through='ArticleAuthor')
     copy = models.TextField(max_length=300)
     slug = models.SlugField(unique=True)
     status = models.CharField(max_length=15)
-    tags = models.ManyToManyField(Tag, related_name='articles')
+    tags = models.ManyToManyField(Tag, through='ArticleTag')
     images = models.ManyToManyField(ArticleImage, blank=True)
 
 
-    def add_author(self, new_author):
-        self.authors.add(new_author)
+class ArticleTag(models.Model):
+    """docstring for ArticleTag"""
+    article = models.ForeignKey(Article)
+    tag = models.ForeignKey(Tag)
+    test = models.CharField(max_length=40, default='')
 
-    def add_tag(self, new_tag):
-        self.tags.add(new_tag)
 
-    def add_authors(self, author_list):
-        for a in author_list:
-            self.add_author(a)
-        self.save()
-
-    def add_tags(self, tag_list):
-        for t in tag_list:
-            self.add_tag(t)
-        self.save()
-
-    class Meta:
-        ordering = ('created',)
+class ArticleAuthor(models.Model):
+    """docstring for ArticleAuthor"""
+    article = models.ForeignKey(Article)
+    author = models.ForeignKey(Author)

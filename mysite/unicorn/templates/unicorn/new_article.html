@@ -1,24 +1,69 @@
-<h2>New Article Wizard</h2>
-<p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
-{% for field in form %}
-	{{field.error}}
-{% endfor %}
+{% load bootstrap3 %}
 
-<form action="/unicorn/new" method="post">{% csrf_token %}
-<table>
-	{{ wizard.management_form }}
-	{% if wizard.form.forms %}
-		{{ wizard.form.management_form }}
-		{% for form in wizard.form.forms %}
-			{{ form }}
-		{% endfor %}
-	{% else %}
-		{{ wizard.form }}
-	{% endif %}
-</table>
-<input type="submit" value="Submit"/>
-{% if wizard.steps.prev %}
-<button name="wizard_goto_step" type="submit" value="{{wizard.steps.first}}">"first step"</button>
-<button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">"prev step"</button>
-{% endif %}
-</form>
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Multiformset Demo</title>
+    <script type="text/javascript">
+        $(function() {
+            $(".inline.{{ author_form.prefix }}").formset({
+                prefix: "{{ author_form.prefix }}",
+            })
+            $(".inline.{{ tag_form.prefix }}").formset({
+                prefix: "{{ tag_form.prefix }}",
+            })
+        })
+    </script>
+</head>
+
+<body>
+    <div>
+        <h1>Add Article</h1>
+        <form action="." method="post">
+            {% csrf_token %}
+            <div>
+                {{ form.as_p }}
+            </div>
+            <fieldset>
+                <legend>Article author</legend>
+                {{author_form.as_p}}
+                {{ author_form.management_form }}
+                {{ author_form.non_form_errors }}
+                {% for form in author_form %}
+                    {{ form.id }}
+                    <div class="inline {{ author_form.prefix }}">
+                        {{ form.description.errors }}
+                        {{ form.description.label_tag }}
+                        {{ form.description }}
+                    </div>
+                {% endfor %}
+            </fieldset>
+            <fieldset>
+                <legend>Article tag</legend>
+                {{tag_form.as_p}}
+                {{ tag_form.management_form }}
+                {{ tag_form.non_form_errors }}
+                {% for form in tag_form %}
+                    {{ form.id }}
+                    <div class="inline {{ tag_form.prefix }}">
+                        {{ form.number.errors }}
+                        {{ form.number.label_tag }}
+                        {{ form.number }}
+                        {{ form.description.errors }}
+                        {{ form.description.label_tag }}
+                        {{ form.description }}
+                    </div>
+                {% endfor %}
+            </fieldset>
+            <input type="submit" value="Add Article" class="submit" />
+        </form>
+    </div>
+</body>
+</html>
