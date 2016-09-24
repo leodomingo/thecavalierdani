@@ -17,10 +17,12 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^', include('unicorn.urls')),
     url(r'^unicorn_api/', include('unicorn_api.urls')),
     url(r'^login/', views.login, name='login'),
     url(r'^admin/', admin.site.urls),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
